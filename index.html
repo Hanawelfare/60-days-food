@@ -54,9 +54,12 @@
 
         <!-- Layout Wrapper -->
         <div class="layout-wrapper">
-            
+
+            <!-- Sidebar Dark Overlay (mobile) -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
             <!-- Sidebar Navigation -->
-            <aside class="sidebar">
+            <aside class="sidebar" id="sidebar">
                 <nav class="nav-menu">
                     <a class="nav-item active" data-tab="registration-section">
                         <i class="ri-user-add-line"></i>
@@ -439,7 +442,7 @@
                     </div>
 
                     <!-- Pie Charts Row -->
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:24px;">
+                    <div class="admin-pie-row" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:24px;">
                         <!-- Chart 1: Submission Status -->
                         <div class="card" style="text-align:center; padding:20px;">
                             <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:4px;"><i class="ri-pie-chart-line"></i> สถานะการส่งรูปภาพ</h4>
@@ -464,7 +467,7 @@
                     </div>
 
                     <!-- Tab layout inside Admin (Pending Approvals vs Global Settings) -->
-                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px; align-items:start; margin-top:32px;">
+                    <div class="admin-main-grid" style="display:grid; grid-template-columns: 2fr 1fr; gap:32px; align-items:start; margin-top:32px;">
                         
                         <!-- Col 1: Pending submissions approval queue -->
                         <div class="card">
@@ -791,6 +794,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Mobile Bottom Navigation Bar (visible only on mobile) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+            <button class="mobile-nav-btn active" id="mbn-register" data-tab="registration-section">
+                <i class="ri-user-add-line"></i>
+                <span>ลงทะเบียน</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-submit" data-tab="submission-section">
+                <i class="ri-camera-lens-line"></i>
+                <span>ส่งผล</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-score" data-tab="scoreboard-section">
+                <i class="ri-trophy-line"></i>
+                <span>คะแนน</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-draw" data-tab="luckydraw-section">
+                <i class="ri-hand-coin-line"></i>
+                <span>รางวัล</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-admin" data-tab="admin-section">
+                <i class="ri-settings-5-line"></i>
+                <span>แอดมิน</span>
+            </button>
+        </div>
+    </nav>
 
     <!-- Main javascript logic -->
     <script src="app.js"></script>
