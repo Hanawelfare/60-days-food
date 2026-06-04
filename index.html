@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>60 Days Behavior Change: เปลี่ยนนิสัย ไม่ใช่แค่อดอาหาร</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Remix Icon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Confetti Overlay Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="app-container">
+        
+        <!-- Header Section -->
+        <header>
+            <div class="brand-container">
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle" style="display:none;">
+                    <i class="ri-menu-2-line"></i>
+                </button>
+                <div class="brand-logo">
+                    <i class="ri-restaurant-line"></i>
+                </div>
+                <div>
+                    <h1 class="brand-name">60 Days Behavior Change</h1>
+                    <div class="brand-subtitle">เปลี่ยนนิสัย ไม่ใช่แค่อดอาหาร 🥗</div>
+                </div>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:16px;">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="theme-toggle-btn" title="สลับโหมด มืด/สว่าง">
+                    <i class="ri-moon-line"></i>
+                </button>
+                
+                <!-- Admin Tag -->
+                <div class="user-profile-widget">
+                    <div class="user-widget-avatar">
+                        <i class="ri-user-smile-line"></i>
+                    </div>
+                    <div class="user-widget-info">
+                        <div class="user-widget-name">กิจกรรมพนักงาน</div>
+                        <div class="user-widget-role">สุขภาพดีไปด้วยกัน</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Layout Wrapper -->
+        <div class="layout-wrapper">
+            
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <a class="nav-item active" data-tab="registration-section">
+                        <i class="ri-user-add-line"></i>
+                        <span>1. ลงทะเบียนเข้าร่วม</span>
+                    </a>
+                    <a class="nav-item" data-tab="submission-section">
+                        <i class="ri-camera-lens-line"></i>
+                        <span>2. ส่งผลประจำวัน</span>
+                    </a>
+                    <a class="nav-item" data-tab="scoreboard-section">
+                        <i class="ri-trophy-line"></i>
+                        <span>3. ตารางคะแนน & ประวัติ</span>
+                    </a>
+                    <a class="nav-item" data-tab="luckydraw-section">
+                        <i class="ri-hand-coin-line"></i>
+                        <span>4. วงล้อสุ่มของรางวัล</span>
+                    </a>
+                    <hr style="border:none; border-top:1px solid var(--border-color); margin: 8px 0;" />
+                    <a class="nav-item" data-tab="admin-section">
+                        <i class="ri-settings-5-line"></i>
+                        <span>แผงควบคุมแอดมิน (HR)</span>
+                    </a>
+                </nav>
+                
+                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; border-top: 1px solid var(--border-color); padding-top:16px;">
+                    © 2026 HR Behavior Change Campaign
+                </div>
+            </aside>
+
+            <!-- Main Interactive Content Area -->
+            <main class="main-content">
+                
+                <!-- Global Status Alert Messages -->
+                <div id="status-alert" class="status-alert"></div>
+
+                <!-- PAGE 1: Registration Form -->
+                <section id="registration-section" class="page-section active">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">ลงทะเบียนสมัครเข้าร่วมกิจกรรม</h2>
+                            <p class="page-description">ภารกิจเปลี่ยนพฤติกรรมดูแลตัวเองเพื่อสุขภาพที่ดีขึ้นภายใน 60 วัน</p>
+                        </div>
+                    </div>
+
+                    <!-- Registration Closed Notice -->
+                    <div id="registration-closed-notice" class="card" style="display:none; text-align:center; border-left: 5px solid var(--danger);">
+                        <i class="ri-error-warning-line" style="font-size:3rem; color:var(--danger); display:block; margin-bottom:16px;"></i>
+                        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-main);">ปิดรับสมัครเข้าร่วมโครงการ</h3>
+                        <p style="color:var(--text-muted); margin-top:8px;">ขออภัยในความไม่สะดวก เนื่องจากกิจกรรม "60 Days Behavior Change" ได้เริ่มต้นขึ้นแล้ว แอดมินจึงได้ปิดรับการลงทะเบียนเพื่อป้องกันพนักงานมาสมัครหลังเริ่มโครงการ</p>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form id="registration-form" class="card" style="max-width: 800px;">
+                        <h3 class="card-title"><i class="ri-user-add-line"></i> กรอกข้อมูลการสมัคร</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="reg-emp-id">รหัสพนักงาน <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="reg-emp-id" class="form-control" placeholder="กรอกรหัสพนักงาน (ระบบจะใส่เลข 0 นำให้อัตโนมัติ)" required>
+                                <small style="color:var(--text-muted); font-size:0.75rem;">พิมพ์เลขรหัสพนักงาน เช่น 1001 ระบบจะเปลี่ยนเป็น 01001 ให้ทันที</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reg-phone">เบอร์โทรศัพท์ภายใน (สูงสุด 4 หลัก) <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="reg-phone" class="form-control" placeholder="เช่น 2415" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="reg-name">ชื่อ - นามสกุล (Auto fill จากฐานข้อมูล)</label>
+                                <input type="text" id="reg-name" class="form-control" placeholder="ชื่อจะแสดงขึ้นโดยอัตโนมัติเมื่อรหัสถูกต้อง" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reg-dept">แผนก / ฝ่าย (Auto fill)</label>
+                                <input type="text" id="reg-dept" class="form-control" placeholder="แผนกจะแสดงขึ้นโดยอัตโนมัติ" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="reg-shift">กะการทำงานพนักงาน <span style="color:var(--danger)">*</span></label>
+                                <select id="reg-shift" class="form-control" required>
+                                    <option value="">-- เลือกกะทำงานของคุณ --</option>
+                                    <option value="Team A">Team A</option>
+                                    <option value="Team B">Team B</option>
+                                    <option value="คร่อมกะ">คร่อมกะ (Overlapping Shift)</option>
+                                    <option value="เช้าตลอด">เช้าตลอด (Morning Shift)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reg-ldl">ผลตรวจไขมัน LDL ตั้งต้น (mg/dL) <span style="color:var(--danger)">*</span></label>
+                                <input type="number" step="0.1" id="reg-ldl" class="form-control" placeholder="เช่น 130.5" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ภาพถ่ายเอกสารผลตรวจสุขภาพ LDL ปี 2568 (เพื่อเป็นหลักฐานยืนยันค่าแรกเริ่ม) <span style="color:var(--danger)">*</span></label>
+                            
+                            <div class="file-upload-wrapper">
+                                <i class="ri-upload-cloud-2-line file-upload-icon"></i>
+                                <div class="file-upload-text">คลิกเพื่ออัปโหลด หรือลากไฟล์รูปภาพมาวางที่นี่</div>
+                                <div class="file-upload-subtext">รองรับเฉพาะไฟล์รูปภาพ .png, .jpg, .jpeg เท่านั้น</div>
+                                <input type="file" id="reg-proof-file" class="file-upload-input" accept="image/*">
+                            </div>
+
+                            <!-- Upload Preview -->
+                            <div id="reg-preview-container" class="upload-preview">
+                                <img id="reg-preview-img" src="" alt="LDL Proof Preview">
+                                <button type="button" id="reg-preview-remove" class="upload-preview-remove" title="ลบภาพเพื่ออัปโหลดใหม่">
+                                    <i class="ri-delete-bin-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; text-align: right;">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="ri-checkbox-circle-line"></i> ส่งใบสมัครลงทะเบียน
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- PAGE 2: Daily Log Submission -->
+                <section id="submission-section" class="page-section">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">ส่งภาพเมนูอาหารคู่กับใบหน้า</h2>
+                            <p class="page-description">ส่งอาหารประจำวันคู่ใบหน้าเพื่อเก็บแต้ม 60 วัน (สุ่มจับรางวัลและลุ้นตำแหน่งผู้ลด LDL สูงสุด)</p>
+                        </div>
+                    </div>
+
+                    <form id="submission-form" class="card" style="max-width: 800px;">
+                        <h3 class="card-title"><i class="ri-camera-lens-line"></i> รายงานบันทึกประจำวัน</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="sub-emp-id">รหัสพนักงานของคุณ <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="sub-emp-id" class="form-control" placeholder="กรอกรหัสพนักงานของคุณ" required>
+                                <small style="color:var(--text-muted); font-size:0.75rem;">ระบบจะสืบค้นประวัติและ Auto-fill ชื่อของคุณด้านล่าง</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="sub-date">ส่งผลสำหรับวันที่ <span style="color:var(--danger)">*</span></label>
+                                <select id="sub-date" class="form-control" required>
+                                    <!-- Options will be populated by JavaScript (Today & Yesterday) -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="sub-name">ชื่อ - นามสกุล</label>
+                                <input type="text" id="sub-name" class="form-control" disabled placeholder="ชื่อพนักงานจะขึ้นโดยอัตโนมัติหากได้ลงทะเบียนแล้ว">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="sub-dept">แผนก</label>
+                                <input type="text" id="sub-dept" class="form-control" disabled placeholder="แผนกพนักงาน">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ถ่ายรูปภาพเซลฟี่หน้าตัวเองคู่กับภาพเมนูอาหารจริงในมื้อนั้น <span style="color:var(--danger)">*</span></label>
+                            
+                            <div id="sub-file-wrapper" class="file-upload-wrapper">
+                                <i class="ri-camera-switch-line file-upload-icon"></i>
+                                <div class="file-upload-text">คลิกเพื่อถ่ายภาพด้วยกล้อง หรืออัปโหลดไฟล์รูปภาพเมนูคู่กับหน้าคุณ</div>
+                                <div class="file-upload-subtext">เพื่อเป็นหลักฐานยืนยันว่าจัดเตรียมและรับประทานจริง ไม่ได้นำภาพมาจากอินเทอร์เน็ต</div>
+                                <input type="file" id="sub-food-file" class="file-upload-input" accept="image/*">
+                            </div>
+
+                            <!-- Upload Preview -->
+                            <div id="sub-preview-container" class="upload-preview">
+                                <img id="sub-preview-img" src="" alt="Food Selfie Preview">
+                                <button type="button" id="sub-preview-remove" class="upload-preview-remove" title="ลบภาพ">
+                                    <i class="ri-delete-bin-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; text-align: right;">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="ri-send-plane-fill"></i> ส่งผลประจำวันเข้าตรวจ
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- PAGE 3: Scoreboard & History -->
+                <section id="scoreboard-section" class="page-section">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">ตารางการจัดอันดับและสืบค้นประวัติ</h2>
+                            <p class="page-description">ตรวจสอบอันดับคะแนนพนักงาน และสืบค้นปฏิทินบันทึกพฤติกรรม 60 วันของคุณ</p>
+                        </div>
+                    </div>
+
+                    <!-- Double Column Layout -->
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start;">
+                        
+                        <!-- Col 1: Score Leaderboard -->
+                        <div class="card">
+                            <h3 class="card-title"><i class="ri-trophy-line"></i> ทำเนียบผู้นำแต้มเปลี่ยนนิสัย (เมนูอาหาร 60 วัน)</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 16px;">* หากคะแนนสะสมเท่ากัน ลำดับจะจัดเรียงตามวันเวลาที่พนักงานส่งผลงานผ่านการอนุมัติก่อน (ใครดูแลตัวเองก่อนได้อันดับขึ้นก่อน)</p>
+                            
+                            <div class="table-responsive">
+                                <table class="premium-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:70px;">อันดับ</th>
+                                            <th>รหัสพนักงาน</th>
+                                            <th>ชื่อ - นามสกุล</th>
+                                            <th>แผนก</th>
+                                            <th>คะแนนสะสม</th>
+                                            <th>ตรวจสอบ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scoreboard-table-body">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Col 2: LDL Winners & Individual History search -->
+                        <div style="display:flex; flex-direction:column; gap:24px;">
+                            
+                            <!-- Subcard 1: Individual Search -->
+                            <div class="card">
+                                <h3 class="card-title" style="margin-bottom:12px;"><i class="ri-search-eye-line"></i> ค้นหาประวัติรายคน</h3>
+                                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:16px;">ตรวจสอบการส่งผลประจำวัน ขาดส่งวันไหน หรือคะแนนอนุมัติแล้วเท่าใด</p>
+                                
+                                <div class="search-container">
+                                    <div class="search-input-wrapper">
+                                        <i class="ri-user-search-line"></i>
+                                        <input type="text" id="chk-emp-id" class="form-control" placeholder="กรอกรหัสพนักงาน">
+                                    </div>
+                                    <button id="chk-search-btn" class="btn btn-primary">ค้นหา</button>
+                                </div>
+                            </div>
+
+                            <!-- Subcard 2: LDL Champions (Lipids Reduction Challenge) -->
+                            <div class="card" style="border-left: 5px solid var(--secondary)">
+                                <h3 class="card-title" style="margin-bottom:6px;"><i class="ri-medal-fill" style="color:var(--secondary);"></i> รางวัลยอดนักลดไขมัน LDL</h3>
+                                <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:16px;">รางวัลชนะเลิศอันดับ 1-3 สำหรับพนักงานที่ค่า LDL ลดลงสูงสุดเทียบกับตรวจสุขภาพปี 2568</p>
+                                
+                                <div class="table-responsive">
+                                    <table class="premium-table" style="font-size:0.85rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>อันดับ</th>
+                                                <th>รหัส</th>
+                                                <th>ชื่อพนักงาน</th>
+                                                <th>ผลวัดผล LDL</th>
+                                                <th>ส่วนต่าง</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ldl-leaders-body">
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 4: Lucky Draw (Wheel of Fortune) -->
+                <section id="luckydraw-section" class="page-section">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">วงล้อนำโชคลุ้นของรางวัลสะสมแต้ม</h2>
+                            <p class="page-description">พนักงานที่มีผลการอนุมัติ 15, 30, 45, และ 60 คะแนน มีสิทธิ์ลุ้นของรางวัลตามเกณฑ์ที่กำหนด</p>
+                        </div>
+                    </div>
+
+                    <!-- Main wheel interaction layout -->
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px; align-items:start;">
+                        
+                        <div class="card" style="display:flex; justify-content:center; padding: 40px 20px;">
+                            <div class="wheel-section-wrapper">
+                                
+                                <div class="form-group" style="width:100%; max-width: 320px;">
+                                    <label class="form-label" for="draw-emp-id">ป้อนรหัสพนักงานเพื่อใช้สิทธิ์สุ่มรางวัล</label>
+                                    <div class="search-container">
+                                        <input type="text" id="draw-emp-id" class="form-control" placeholder="เช่น 01001">
+                                        <button id="chk-draw-btn" class="btn btn-primary">ใช้สิทธิ์</button>
+                                    </div>
+                                </div>
+
+                                <!-- Interactive Wheel -->
+                                <div id="wheel-play-area">
+                                    <div class="wheel-outer-container">
+                                        <div class="wheel-pointer"></div>
+                                        <div class="wheel-center-pin"></div>
+                                        <canvas id="wheel-canvas" class="wheel-inner-canvas" width="296" height="296"></canvas>
+                                    </div>
+                                    
+                                    <div id="wheel-status-text" style="margin-top:20px; font-weight:600; min-height:60px; color:var(--text-muted);">
+                                        ป้อนรหัสพนักงานด้านบน เพื่อตรวจสอบและใช้สิทธิ์หมุนรางวัลประจำเกณฑ์คะแนนของคุณ
+                                    </div>
+
+                                    <button id="spin-button" class="btn btn-primary btn-lg" style="display:none; box-shadow:0 10px 20px rgba(16,185,129,0.3); border-radius:50px; font-size:1.1rem; padding: 14px 40px;">
+                                        <i class="ri-refresh-line ri-spin"></i> หมุนวงล้อนำโชค!
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right list card: Recent winners & Prize schedule info -->
+                        <div style="display:flex; flex-direction:column; gap:24px;">
+                            
+                            <div class="card">
+                                <h3 class="card-title"><i class="ri-gift-fill" style="color:var(--secondary);"></i> ข้อมูลจำกัดและกฎของรางวัล</h3>
+                                <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.6;">
+                                    - ของรางวัลแต่ละรอบของวันจับสลากที่แอดมินกำหนดมีจำนวนจำกัด **เพียง 3 ชิ้นเท่านั้น**<br/>
+                                    - เมื่อรางวัลแจกออกไปครบ 3 ชิ้นแล้ว ปุ่มสปินและสิทธิ์การลุ้นจะยุติลงโดยอัตโนมัติในทันที<br/>
+                                    - การสุ่มรางวัลจะเปิดลุ้น 2 รอบ รอบละ 1 รางวัลใหญ่พิเศษ สำหรับคนที่ส่งครบ 60 วันติดต่อกันโดยไม่มีวันขาดเลย (ระบบจะสุ่มลุ้นรางวัลใหญ่ท้ายโครงการ)
+                                </p>
+                            </div>
+
+                            <div class="card">
+                                <h3 class="card-title"><i class="ri-user-smile-line"></i> รายชื่อผู้โชคดีได้รับรางวัลล่าสุด</h3>
+                                <ul id="recent-winners-list" style="list-style:none; padding:0;">
+                                    <!-- Winner rows go here -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 5 & 6: ADMIN CONTROLS SECTION -->
+                <section id="admin-section" class="page-section">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="page-title">แผงควบคุมหลักสำหรับแอดมินบุคคล (HR Dashboard)</h2>
+                            <p class="page-description">อนุมัติเอกสารพนักงาน ตั้งค่าของรางวัล กำหนดวันจับรางวัล และรายงานสถิติตามแผนกอย่างเป็นทางการ</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="logoutAdmin()">
+                            <i class="ri-logout-box-line"></i> ออกจากระบบแอดมิน
+                        </button>
+                    </div>
+
+                    <!-- Metrics Cards Grid -->
+                    <div class="metrics-grid">
+                        <div class="card metric-card">
+                            <div class="metric-icon-box primary">
+                                <i class="ri-group-line"></i>
+                            </div>
+                            <div class="metric-details">
+                                <div id="adm-stat-total" class="metric-value">0</div>
+                                <div class="metric-label">จำนวนผู้สมัครทั้งหมด</div>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon-box success">
+                                <i class="ri-calendar-check-line"></i>
+                            </div>
+                            <div class="metric-details">
+                                <div id="adm-stat-consec" class="metric-value">0 คน</div>
+                                <div class="metric-label">ส่งครบติดต่อกัน 60 วัน</div>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon-box danger">
+                                <i class="ri-calendar-close-line"></i>
+                            </div>
+                            <div class="metric-details">
+                                <div id="adm-stat-incom" class="metric-value">0 คน</div>
+                                <div class="metric-label">ส่งไม่ต่อเนื่อง/ขาดส่ง</div>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon-box secondary">
+                                <i class="ri-gift-2-line"></i>
+                            </div>
+                            <div class="metric-details">
+                                <div id="adm-stat-prizes" class="metric-value">3</div>
+                                <div class="metric-label">ของรางวัลรอบวันนี้คงเหลือ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pie Charts Row -->
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:24px;">
+                        <!-- Chart 1: Submission Status -->
+                        <div class="card" style="text-align:center; padding:20px;">
+                            <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:4px;"><i class="ri-pie-chart-line"></i> สถานะการส่งรูปภาพ</h4>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">สัดส่วนผลการตรวจสอบ</p>
+                            <canvas id="pie-submission-status" width="180" height="180" style="display:block; margin:0 auto;"></canvas>
+                            <div id="pie-submission-legend" style="margin-top:10px; font-size:0.75rem; text-align:left; display:inline-block;"></div>
+                        </div>
+                        <!-- Chart 2: Consecutive vs Incomplete -->
+                        <div class="card" style="text-align:center; padding:20px;">
+                            <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:4px;"><i class="ri-pie-chart-2-line"></i> ความต่อเนื่องในการส่ง</h4>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">ครบ 60 วัน vs ไม่ครบ</p>
+                            <canvas id="pie-consecutive" width="180" height="180" style="display:block; margin:0 auto;"></canvas>
+                            <div id="pie-consecutive-legend" style="margin-top:10px; font-size:0.75rem; text-align:left; display:inline-block;"></div>
+                        </div>
+                        <!-- Chart 3: By Department -->
+                        <div class="card" style="text-align:center; padding:20px;">
+                            <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:4px;"><i class="ri-donut-chart-line"></i> สัดส่วนผู้เข้าร่วมตามแผนก</h4>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">จำนวนสมาชิกแต่ละแผนก</p>
+                            <canvas id="pie-department" width="180" height="180" style="display:block; margin:0 auto;"></canvas>
+                            <div id="pie-department-legend" style="margin-top:10px; font-size:0.75rem; text-align:left; display:inline-block;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab layout inside Admin (Pending Approvals vs Global Settings) -->
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px; align-items:start; margin-top:32px;">
+                        
+                        <!-- Col 1: Pending submissions approval queue -->
+                        <div class="card">
+                            <h3 class="card-title" style="margin-bottom:4px;"><i class="ri-camera-switch-line"></i> รายการภาพส่งผลค้างการอนุมัติประจำวัน</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:24px;">กรุณาตรวจสอบว่ามีภาพถ่ายอาหารคู่ใบหน้าของพนักงานจริง และไม่มีประวัติการคัดลอกรูปจากในเครือข่ายอินเทอร์เน็ต</p>
+                            
+                            <div id="adm-pending-list" class="approval-list-grid">
+                                <!-- Dynamically populated card blocks -->
+                            </div>
+                        </div>
+
+                        <!-- Col 2: Settings & Configurations -->
+                        <div style="display:flex; flex-direction:column; gap:24px;">
+                            
+                            <!-- Subcard A: Registration Control & Draw settings -->
+                            <div class="card">
+                                <h3 class="card-title"><i class="ri-equalizer-line"></i> การตั้งค่าการลงทะเบียน & ของรางวัล</h3>
+                                
+                                <!-- Toggle Open/Close -->
+                                <div class="switch-container">
+                                    <div class="switch-label-group">
+                                        <div class="switch-title">เปิดการลงทะเบียนพนักงาน</div>
+                                        <div class="switch-desc">หากปิด พนักงานจะไม่สามารถมาลงทะเบียนร่วมกิจกรรมย้อนหลังได้</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="admin-toggle-reg" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Set Scheduled Draw Dates & Prize Caps -->
+                                <div style="margin-top:20px; border-top: 1px solid var(--border-color); padding-top:16px;">
+                                    <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:12px;">กำหนดวันหมุนวงล้อ (Lucky Draw Schedule)</h4>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size:0.8rem;" for="adm-date-15">วันที่หมุนรางวัลเกณฑ์ 15 คะแนน</label>
+                                        <input type="date" id="adm-date-15" class="form-control" style="padding:6px 12px; font-size:0.85rem;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size:0.8rem;" for="adm-date-30">วันที่หมุนรางวัลเกณฑ์ 30 คะแนน</label>
+                                        <input type="date" id="adm-date-30" class="form-control" style="padding:6px 12px; font-size:0.85rem;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size:0.8rem;" for="adm-date-45">วันที่หมุนรางวัลเกณฑ์ 45 คะแนน</label>
+                                        <input type="date" id="adm-date-45" class="form-control" style="padding:6px 12px; font-size:0.85rem;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size:0.8rem;" for="adm-date-60">วันที่หมุนรางวัลเกณฑ์ 60 คะแนน</label>
+                                        <input type="date" id="adm-date-60" class="form-control" style="padding:6px 12px; font-size:0.85rem;">
+                                    </div>
+
+                                    <div class="form-group" style="margin-top:12px;">
+                                        <label class="form-label" style="font-size:0.8rem;" for="adm-prizes-count">จำนวนของรางวัลที่สุ่มจำกัดรอบวันนี้ (ชิ้น)</label>
+                                        <input type="number" id="adm-prizes-count" class="form-control" style="padding:6px 12px;" value="3" min="0">
+                                    </div>
+
+                                    <button id="admin-save-draw-btn" class="btn btn-primary btn-block" style="padding:10px;">
+                                        บันทึกกำหนดการจับรางวัล
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Subcard B: Department Summary Stats -->
+                            <div class="card">
+                                <div style="display:flex; justify-content:between; align-items:center; margin-bottom:12px;">
+                                    <h3 class="card-title" style="margin-bottom:0;"><i class="ri-building-line"></i> สรุปตามแผนก</h3>
+                                    <select id="adm-filter-dept" class="form-control" style="width:120px; padding:4px 8px; font-size:0.8rem; border-color:var(--border-color);">
+                                        <option value="all">แผนกทั้งหมด</option>
+                                        <option value="IT">IT</option>
+                                        <option value="HR">HR</option>
+                                        <option value="บัญชี">บัญชี</option>
+                                        <option value="การตลาด">การตลาด</option>
+                                        <option value="จัดซื้อ">จัดซื้อ</option>
+                                        <option value="ผลิต">ผลิต</option>
+                                        <option value="ขาย">ขาย</option>
+                                        <option value="วิศวกรรม">วิศวกรรม</option>
+                                        <option value="คลังสินค้า">คลังสินค้า</option>
+                                    </select>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="premium-table" style="font-size:0.8rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>แผนก</th>
+                                                <th>ส่งสมัคร</th>
+                                                <th>ครบ 60 วัน</th>
+                                                <th>ไม่ครบ</th>
+                                                <th>รายชื่อ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adm-dept-table-body">
+                                            <!-- Dynamically aggregate -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Subcard C: Google Sheet Live API Integration Setup -->
+                            <div class="card" style="background:#0f172a; border-color:#334155; color:#f8fafc;">
+                                <h3 class="card-title" style="color:var(--primary);"><i class="ri-google-fill"></i> Google Sheets API Sync</h3>
+                                <p style="font-size:0.75rem; color:#94a3b8; line-height:1.5;">ต้องการบันทึกข้อมูลเข้า Google Sheets แบบเรียลไทม์ควบคู่กันหรือไม่? นำโค้ด Google Apps Script นี้นำไปวางในเครื่องมือ Script ของ Sheet ปลายทางได้ทันที</p>
+                                
+                                <div class="form-group" style="margin-top:16px;">
+                                    <label class="form-label" style="color:#e2e8f0; font-size:0.75rem;" for="adm-sync-url">ระบุ URL Google Web App API ที่เผยแพร่แล้ว</label>
+                                    <input type="url" id="adm-sync-url" class="form-control" style="background:#1e293b; color:#fff; border-color:#475569; padding:8px 12px; font-size:0.8rem;" placeholder="https://script.google.com/macros/s/.../exec">
+                                    <button onclick="saveGoogleScriptUrl()" class="btn btn-primary btn-block" style="padding:6px 12px; font-size:0.8rem; margin-top:8px;">บันทึกการซิงก์ข้อมูล</button>
+                                </div>
+                                <div class="form-group" style="margin-top:12px; border-top:1px dashed #334155; padding-top:12px;">
+                                    <button id="adm-sync-employees-btn" onclick="syncEmployeeListFromGoogleSheet()" class="btn btn-secondary btn-block" style="background:#1e293b; color:#fff; border-color:#475569; padding:8px 12px; font-size:0.85rem; border-radius: var(--rounded-md);">
+                                        <i class="ri-refresh-line"></i> ดึงรายชื่อพนักงานจาก Google Sheet
+                                    </button>
+                                    <small style="color:#94a3b8; font-size:0.7rem; display:block; margin-top:4px;">* ดึงข้อมูลพนักงานของท่านจากแท็บชื่อ "Name" เพื่อนำมาล็อกไม่ให้บุคคลภายนอกลงทะเบียน</small>
+                                </div>
+
+                                <div class="code-container">
+                                    <button class="code-copy-btn" onclick="copyCodeToClipboard()">คัดลอกสคริปต์</button>
+                                    <pre id="google-sheet-script-code">
+                                        <!-- Code string will display here -->
+                                    </pre>
+                                </div>
+                            </div>
+
+                            <!-- Subcard D: Mock Employee Database Manager (To adjust target IDs easily) -->
+                            <div class="card">
+                                <h3 class="card-title"><i class="ri-database-2-line"></i> ระบบจำลองรายชื่อพนักงาน (Mock Data Manager)</h3>
+                                <p style="color:var(--text-muted); font-size:0.75rem; margin-bottom:12px;">ปรับแต่งฐานข้อมูลสำหรับการจำลองรหัสพนักงาน เพื่อทดสอบการลงทะเบียนและการทำงานของ Auto-fill</p>
+                                
+                                <!-- Add form inside admin -->
+                                <div style="display:flex; flex-direction:column; gap:8px; background:var(--light); padding:12px; border-radius:8px; margin-bottom:16px;">
+                                    <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">เพิ่มพนักงานเข้าระบบจำลอง</div>
+                                    <input type="text" id="adm-add-emp-id" class="form-control" style="padding:6px 12px; font-size:0.8rem;" placeholder="รหัสพนักงาน (เช่น 01011)">
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                                        <input type="text" id="adm-add-name" class="form-control" style="padding:6px 12px; font-size:0.8rem;" placeholder="ชื่อจริง">
+                                        <input type="text" id="adm-add-surname" class="form-control" style="padding:6px 12px; font-size:0.8rem;" placeholder="นามสกุล">
+                                    </div>
+                                    <select id="adm-add-dept" class="form-control" style="padding:6px 12px; font-size:0.8rem;">
+                                        <option value="">-- เลือกแผนก --</option>
+                                        <option value="IT">IT</option>
+                                        <option value="HR">HR</option>
+                                        <option value="บัญชี">บัญชี</option>
+                                        <option value="การตลาด">การตลาด</option>
+                                        <option value="จัดซื้อ">จัดซื้อ</option>
+                                        <option value="ผลิต">ผลิต</option>
+                                        <option value="ขาย">ขาย</option>
+                                        <option value="วิศวกรรม">วิศวกรรม</option>
+                                        <option value="คลังสินค้า">คลังสินค้า</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="addNewMockEmployee()" style="padding:6px; font-size:0.8rem; margin-top:4px;">เพิ่มพนักงานลงฐานจำลอง</button>
+                                </div>
+
+                                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                    <table class="premium-table" style="font-size:0.75rem;">
+                                        <thead>
+                                            <tr>
+                                                <th>รหัส</th>
+                                                <th>ชื่อ-สกุล</th>
+                                                <th>แผนก</th>
+                                                <th>การจัดการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adm-mock-db-list">
+                                            <!-- Dynamically populated employees -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       POPUP MODAL COMPONENT OVERLAYS
+       ========================================================================== -->
+
+    <!-- Modal 1: Admin Authorization Lock Modal -->
+    <div id="admin-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="ri-lock-line" style="color:var(--secondary)"></i> เข้าสู่ระบบแอดมินบุคคล (HR)</h4>
+                <button class="modal-close" onclick="closeAdminPasswordModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <i class="ri-shield-user-fill" style="font-size:4rem; color:var(--primary); display:block; margin-bottom:12px;"></i>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:16px;">กรุณากรอกรหัสผ่านเพื่อยืนยันตัวตนแอดมิน เพื่อเข้าดูสถิติตามแผนก จัดการของรางวัล และอนุมัติหลักฐานภาพถ่ายพนักงาน</p>
+                <div class="form-group">
+                    <input type="password" id="admin-pass-input" class="form-control" style="text-align:center; font-size:1.3rem; letter-spacing:4px;" placeholder="••••" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAdminPasswordModal()">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="submitAdminPassword()">เข้าสู่ระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Rejection comments prompt -->
+    <div id="reject-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="ri-close-circle-fill" style="color:var(--danger)"></i> ปฏิเสธการอนุมัติผลงาน</h4>
+                <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">ระบุเหตุผลเพื่อแจ้งเตือนพนักงานให้ทราบว่ามีสิ่งใดบกพร่อง เพื่อสามารถดำเนินการแก้ไขส่งรูปอาหารใหม่ให้ถูกต้องได้</p>
+                <div class="form-group">
+                    <label class="form-label" for="reject-comment-input">หมายเหตุข้อผิดพลาดแจ้งพนักงาน <span style="color:var(--danger)">*</span></label>
+                    <select class="form-control" style="margin-bottom:12px;" onchange="document.getElementById('reject-comment-input').value = this.value">
+                        <option value="">-- เลือกเหตุผลด่วน (Quick-select) --</option>
+                        <option value="ไม่เห็นภาพใบหน้าพนักงานคู่กับจานเมนูอาหารชัดเจน">ไม่เห็นหน้าคู่จานอาหารชัดเจน</option>
+                        <option value="ภาพถ่ายเบลอ มืด หรือมองรายละเอียดของเมนูไม่ชัด">ภาพถ่ายไม่ชัดเจน/เบลอ</option>
+                        <option value="ตรวจพบว่าเป็นรูปภาพคัดลอกจากเครือข่ายอินเทอร์เน็ต">รูปภาพก็อปปี้จากอินเทอร์เน็ต</option>
+                        <option value="ส่งภาพอาหารเมนูเดิมซ้ำซ้อนกับวันที่ผ่านมา">รูปภาพเดิมส่งซ้ำ</option>
+                    </select>
+                    <textarea id="reject-comment-input" class="form-control" style="height:100px; resize:none;" placeholder="พิมพ์อธิบายเพิ่มเติม เช่น กรุณาถ่ายเซลฟี่ให้เห็นครึ่งหน้าด้วยนะคะ"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRejectModal()">ยกเลิก</button>
+                <button class="btn btn-danger" onclick="submitRejectSubmission()">บันทึกการปฏิเสธ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Employee calendar calendar view -->
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h4 id="hist-modal-title" class="modal-title">ประวัติการส่งผลงานของฉัน</h4>
+                <button class="modal-close" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="hist-stats">
+                    <!-- Stat cards go here dynamically -->
+                </div>
+                
+                <h5 style="margin-top:20px; font-weight:700; font-size:0.9rem; margin-bottom:8px;">ปฏิทินบันทึกพฤติกรรมควบคุมการทานอาหาร (60 วัน)</h5>
+                
+                <!-- Status indicators -->
+                <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:0.75rem; margin-bottom:12px; color:var(--text-muted);">
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#ecfdf5; border:1px solid #10b981; border-radius:2px;"></span> อนุมัติผ่าน</div>
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#fefbeb; border:1px solid #f59e0b; border-radius:2px;"></span> รอตรวจสอบ</div>
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#fef2f2; border:1px solid #ef4444; border-radius:2px;"></span> ไม่ผ่าน/ปฏิเสธ</div>
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:2px;"></span> ขาดส่งผล</div>
+                </div>
+
+                <!-- Calendar grid container -->
+                <div id="hist-calendar" class="calendar-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeHistoryModal()">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Submission specific detail popup -->
+    <div id="sub-detail-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 420px;">
+            <div class="modal-header">
+                <h4 id="sub-detail-date" class="modal-title">รายละเอียดประวัติ</h4>
+                <button class="modal-close" onclick="closeSubDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+                <div style="width:100%; border-radius:8px; overflow:hidden; border:1px solid var(--border-color); max-height: 250px;">
+                    <img id="sub-detail-img" src="" alt="Submission image preview" style="width:100%; height:100%; object-fit:cover; display:block;">
+                </div>
+                <div>
+                    <strong>สถานะการอนุมัติคะแนน:</strong>
+                    <div id="sub-detail-status" style="margin-top:6px;"></div>
+                </div>
+                <div id="sub-detail-comment"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSubDetailModal()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Final LDL Update Modal -->
+    <div id="ldl-update-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="ri-heart-pulse-fill" style="color:var(--danger);"></i> อัปเดตค่าไขมัน LDL ท้ายโครงการ</h4>
+                <button class="modal-close" onclick="closeLdlUpdateModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="ldl-update-emp-name" style="font-weight:700; font-size:1rem; margin-bottom:8px;"></p>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">กรอกค่าไขมันตรวจสุขภาพรอบสองเพื่อเปรียบเทียบผลและสะสมอันดับชิงรางวัล</p>
+                
+                <div style="background:var(--light); padding:12px; border-radius:8px; margin-bottom:16px; border:1px solid var(--border-color);">
+                    <div style="font-size:0.8rem; color:var(--text-muted);">ค่าไขมัน LDL แรกเริ่ม (ปี 2568):</div>
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--text-main);"><span id="ldl-initial-display">0</span> mg/dL</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="ldl-final-input">ค่า LDL ครั้งสุดท้ายผลตรวจสุขภาพใหม่ (mg/dL) <span style="color:var(--danger)">*</span></label>
+                    <input type="number" step="0.1" id="ldl-final-input" class="form-control" placeholder="ระบุค่าตัวเลข LDL ใหม่" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLdlUpdateModal()">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="submitLdlUpdate()">บันทึกอัปเดต</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 6: Generic details view modal -->
+    <div id="generic-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <h4 id="generic-modal-title" class="modal-title">ข้อมูลผู้เข้าร่วม</h4>
+                <button class="modal-close" onclick="closeGenericModal()">&times;</button>
+            </div>
+            <div id="generic-modal-body" class="modal-body">
+                <!-- Generic content dynamically injected -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeGenericModal()">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main javascript logic -->
+    <script src="app.js"></script>
+
+</body>
+</html>
